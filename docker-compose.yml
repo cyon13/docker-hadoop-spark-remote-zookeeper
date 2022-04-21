@@ -1,0 +1,81 @@
+version: "3.7"
+
+services:
+        nn1:
+                image: cyon13/docker-hadoop-spark-remote-zookeeper:1.0
+                container_name: nn1
+                hostname: nn1
+                #restart: on-failure
+                ports:
+                   - "50070:50070"
+                   - "19888:19888"
+                   - "18080:18080"
+                   - "8088:8088"
+                   - "18888:18888"
+                environments:
+                   - HIVE_META_CONNECTION_URL=jdbc:oracle:thin:@172.17.0.3:1521:xe
+                   - HIVE_META_DB_TYPE=ORACLE
+                   - HIVE_META_CONNECTION_DRIVERNAME=oracle.jdbc.OracleDriver
+                   - HIVE_META_CONNECTION_USERNAME=hive
+                   - HIVE_META_CONNECTION_PASSWORD=11111 
+
+                volumes:
+                   - nn1:/usr/local/hadoop/data        
+ 
+        nn2:
+                image: cyon13/docker-hadoop-spark-remote-zookeeper:1.0
+                container_name: nn2
+                hostname: nn2
+                #restart: on-failure
+                ports:
+                   - "50071:50070"
+                   - "19889:19888"
+                   - "18081:18080"
+                   - "8089:8088"
+                   - "8486:8485"
+                volumes:
+                   - nn2:/usr/local/hadoop/data
+
+        dn1:
+                image: cyon13/docker-hadoop-spark-remote-zookeeper:1.0
+                container_name: dn1
+                hostname: dn1
+                #restart: on-failure
+                ports:
+                    - "9864:9864"
+                    - "8487:8485"
+                volumes:
+                   - dn1:/usr/local/hadoop/data
+ 
+        dn2:
+                image: cyon13/docker-hadoop-spark-remote-zookeeper:1.0
+                container_name: dn2
+                hostname: dn2
+                #restart: on-failure
+                ports:
+                    - "9865:9864"
+                    - "8488:8485"
+                volumes:
+                   - dn2:/usr/local/hadoop/data
+        
+        dn3:
+                image: cyon13/docker-hadoop-spark-remote-zookeeper:1.0
+                container_name: dn3
+                hostname: dn3
+                #restart: on-failure
+                ports:
+                    - "9866:9864"
+                    - "8489:8485"
+                volumes:
+                   - dn3:/usr/local/hadoop/data
+
+volumes:
+        nn1:
+        nn2:
+        dn1:
+        dn2:
+        dn3:
+networks:
+        default:
+                external:
+                        name: hadoop_eco

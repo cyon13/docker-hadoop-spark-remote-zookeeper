@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+
+<!-- Put site-specific property overrides in this file. -->
+
+
+
+<configuration>
+	<!-- configuration hadoop -->
+	<property>
+		<name>dfs.replication</name>
+		<value>2</value>
+	</property>
+	<property>
+		<name>dfs.namenode.name.dir</name>
+		<value>/usr/local/hadoop/data/nameNode</value>
+	</property>
+	<property>
+		<name>dfs.datanode.data.dir</name>
+		<value>/usr/local/hadoop/data/dataNode</value>
+	</property>
+	<property>
+		<name>dfs.journalnode.edits.dir</name>
+		<value>/usr/local/hadoop/data/dfs/journalnode</value>
+	</property>
+
+		<!-- Journalnode에서 관리되는 디렉토리 Journalnode 는 네임노드의 동기화 상태를 유지하고 특정시점에서 fsimage(스냅샷) 이후에 변경된 사항 을 edits log 라고 하는데 이것을 저장
+						  -->
+	<property>
+		<name>dfs.nameservices</name>
+		<value>my-hadoop-cluster</value>
+	</property>
+		<!--
+		     하둡 클러스터의 이름 지정
+						  -->
+	<property>
+		<name>dfs.ha.namenodes.my-hadoop-cluster</name>
+		<value>namenode1,namenode2</value>
+	</property>
+	<property>
+		<name>dfs.namenode.rpc-address.my-hadoop-cluster.namenode1</name>
+		<value>nn1:8020</value>
+	</property>
+		<!--
+		     네임노드끼리 rpc 통신할때 사용하는 주소
+						  -->
+	<property>
+		<name>dfs.namenode.rpc-address.my-hadoop-cluster.namenode2</name>
+		<value>nn2:8020</value>
+	</property>
+	<property>
+		<name>dfs.namenode.http-address.my-hadoop-cluster.namenode1</name>
+		<value>nn1:50070</value>
+	</property>
+		<!--
+		     네임노드 web 주소
+						  -->
+	<property>
+		<name>dfs.namenode.http-address.my-hadoop-cluster.namenode2</name>
+		<value>nn2:50070</value>
+	</property>
+	<property>
+		<name>dfs.namenode.shared.edits.dir</name>
+		<value>qjournal://nn1:8485;nn2:8485;dn1:8485/my-hadoop-cluster</value>
+	</property>
+		<!--
+		     zookeeper 가 설치되는 주소를 넣어줌.
+						  -->
+	<property>
+		<name>dfs.client.failover.proxy.provider.my-hadoop-cluster</name>
+		<value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+	</property>
+		<!--
+		     active namenode에 접근할 때 사용하는 java class
+						  -->
+	<property>
+		<name>dfs.ha.fencing.methods</name>
+		<value>shell(/bin/true)</value>
+	</property>
+		<!--
+		     failover 상황에서 기존 activenode를 차단할 때 사용하는 방법을 기재 
+						  -->
+	<property>
+		<name>dfs.ha.fencing.ssh.private-key-files</name>
+		<value>/home/root/.ssh/id_rsa</value>
+	</property>
+	<property> 
+		<name>dfs.ha.automatic-failover.enabled</name>
+		<value>true</value>
+	</property>
+		<!--
+		     true라고 설정해야 자동으로 failover가 작동
+						  -->
+	<property>
+		<name>dfs.name.dir</name>
+		<value>/usr/local/hadoop/data/name</value>
+	</property>
+	<property>
+		<name>dfs.data.dir</name>
+		<value>/usr/local/hadoop/data/data</value>
+	</property>
+	<property>
+		<name>dfs.block.size</name>
+		<value>16777216</value>
+		<!-- 
+		  HDFS의 block size, Byte 단위.  8MB=8,388,608 / 16MB=16,777,216 / 32MB=33,554,432 / 64MB=67,108,864 / 128MB=134,217,728
+						  -->
+	</property>
+	<property>
+		<name>fs.trash.interval</name>
+		<value>3</value>
+		<!-- 
+		      휴지통과 같은 기능이다. 파일을 삭제하면 임시 공간으로 이동되고 지정한 시간 이후 삭제된다.
+			    value의 값(=분)에 따라 휴지통이 비워진다.  
+			  -->
+	</property>
+</configuration>
