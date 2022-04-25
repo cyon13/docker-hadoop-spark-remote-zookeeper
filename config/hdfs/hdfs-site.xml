@@ -114,7 +114,7 @@
 	</property>
 	<property>
 		<name>dfs.block.size</name>
-		<value>16777216</value>
+		<value>67108864</value>
 		<!-- 
 		  HDFS의 block size, Byte 단위.  8MB=8,388,608 / 16MB=16,777,216 / 32MB=33,554,432 / 64MB=67,108,864 / 128MB=134,217,728
 						  -->
