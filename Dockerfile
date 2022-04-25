@@ -1,7 +1,7 @@
 FROM ubuntu:20.04
 
 #자바 등 기타 프로그램 설치
-RUN apt-get -y update && apt-get -y upgrade && apt-get -y dist-upgrade &&  apt-get install -y \
+RUN apt-get clean && apt-get -y update && apt-get install -y \
     vim \
     wget \
     unzip \
@@ -95,6 +95,7 @@ RUN echo 'export HADOOP_HOME=/usr/local/hadoop' >> ~/.bashrc && \
     echo 'export SQOOP_CONF_DIR=$SQOOP_HOME/conf' >> ~/.bashrc && \
     echo 'export HIVE_HOME=/usr/local/hive' >> ~/.bashrc && \
     echo 'export HIVE_CONF_DIR=$HIVE_HOME/conf' >> ~/.bashrc && \
+    echo 'export HADOOP_CLASSPATH=$HADOOP_CLASSPATH:$HIVE_HOME/lib/*' >> ~/.bashrc && \
     echo 'export HIVE_META_CONNECTION_URL=${HIVE_META_CONNECTION_URL}' >> ~/.bashrc && \
     echo 'export HIVE_META_DB_TYPE=${HIVE_META_DB_TYPE}' >> ~/.bashrc && \
     echo 'export HIVE_META_CONNECTION_DRIVERNAME=${HIVE_META_CONNECTION_DRIVERNAME}' >> ~/.bashrc && \
