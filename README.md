@@ -1,6 +1,15 @@
-# docker-hadoop-spark_v1
+# docker-hadoop-spark-remote-zookeeper
 
+## 구성
+hadoop-ha (master :2, worker:3)
+spark
+hive
+sqoop
+zeppelin
 
+## 실행
+### zookeeper 먼저 실행
+[docker-zookeeper](https://github.com/cyon13/docker-zookeeper) 먼저 실행
 ### docker-compose 실행
 
 ```sh
