@@ -39,6 +39,10 @@ ssh nn2 "$HADOOP_HOME/bin/hdfs namenode -bootstrapStandby -force"
 $HADOOP_HOME/sbin/start-all.sh
 # JopHistory run
 mapred --daemon start historyserver
+
+#HBASE run
+$HBASE_HOME/bin/start-hbase.sh
+
 # Spark run 
 $SPARK_HOME/sbin/start-all.sh
 

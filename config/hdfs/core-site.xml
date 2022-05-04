@@ -23,7 +23,7 @@
 	</property>
 	<property> 
 		<name>fs.default.name</name> 
-		<value>hdfs://nn1:9000</value>
+		<value>hdfs://nn1:8020</value>
 	</property>
 	<!-- hdfs 의 기본 통신 주소 값 -->
 	<property> 

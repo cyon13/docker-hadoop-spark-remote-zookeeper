@@ -52,13 +52,22 @@ RUN wget https://dlcdn.apache.org/zeppelin/zeppelin-0.10.1/zeppelin-0.10.1-bin-a
     mv zeppelin-0.10.1-bin-all /usr/local/zeppelin && \
     rm zeppelin-0.10.1-bin-all.tgz
 
+# HBASE 설치
+RUN wget http://archive.apache.org/dist/hbase/2.4.8/hbase-2.4.8-bin.tar.gz && \
+    tar -xvf hbase-2.4.8-bin.tar.gz && \
+    mv hbase-2.4.8 /usr/local/hbase && \
+    rm hbase-2.4.8-bin.tar.gz
+
+
 # 환경변수 설정
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 \
     HADOOP_HOME=/usr/local/hadoop \
     SQOOP_HOME=/usr/local/sqoop \
     HIVE_HOME=/usr/local/hive \
     SPARK_HOME=/usr/local/spark \
-    ZEPPELIN_HOME=/usr/local/zeppelin
+    ZEPPELIN_HOME=/usr/local/zeppelin \
+    HBASE_HOME=/usr/local/hbase
+
 ENV HADOOP_COMMON_HOME=$HADOOP_HOME \
     HADOOP_HDFS_HOME=$HADOOP_HOME \
     HADOOP_MAPRED_HOME=$HADOOP_HOME \
@@ -68,11 +77,12 @@ ENV HADOOP_COMMON_HOME=$HADOOP_HOME \
     SQOOP_CONF_DIR=$SQOOP_HOME/conf \
     HIVE_CONF_DIR=$HIVE_HOME/conf \
     JAVA_HOME=$JAVA_HOME \
-    PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$SQOOP_HOME/bin:$HIVE_HOME/bin:$SPARK_HOME/bin:$SPARK_HOME/sbin:/usr/bin/python3:/usr/local:$ZEPPELIN_HOME/bin \
+    PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$SQOOP_HOME/bin:$HIVE_HOME/bin:$SPARK_HOME/bin:$SPARK_HOME/sbin:/usr/bin/python3:/usr/local:$ZEPPELIN_HOME/bin:$HBASE_HOME/bin \
     PYTHONPATH=/usr/bin/python3 \
     PYSPARK_PYTHON=/usr/bin/python3 \
     SPARK_CONF_DIR=$SPARK_HOME/conf \
     ZEPPELIN_CONF_DIR=$ZEPPELIN_HOME/conf \
+    HBASE_CONF_DIR=$HBASE_HOME/conf \
     HDFS_NN1_NAME=nn1 \
     HDFS_NN2_NAME=nn2 \
     HDFS_DN1_NAME=dn1 \
@@ -103,11 +113,13 @@ RUN echo 'export HADOOP_HOME=/usr/local/hadoop' >> ~/.bashrc && \
     echo 'export HIVE_META_CONNECTION_PASSWORD=${HIVE_META_CONNECTION_PASSWORD}' >> ~/.bashrc && \
     echo 'export SPARK_HOME=/usr/local/spark' >> ~/.bashrc && \
     echo 'export SPARK_CONF_DIR=$SPARK_HOME/conf' >> ~/.bashrc && \
-    echo 'export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$SQOOP_HOME/bin:$HIVE_HOME/bin:$SPARK_HOME/bin:$SPARK_HOME/sbin:/usr/bin/python3:/usr/local' >> ~/.bashrc && \
+    echo 'export PATH=$PATH:$JAVA_HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$SQOOP_HOME/bin:$HIVE_HOME/bin:$SPARK_HOME/bin:$SPARK_HOME/sbin:/usr/bin/python3:/usr/local:$ZEPPELIN_HOME/bin:$HBASE_HOME:bin' >> ~/.bashrc && \
 	echo 'export PYTHONPATH=/usr/bin/python3' >> ~/.bashrc && \
     echo 'export PYSPARK_PYTHON=/usr/bin/python3' >> ~/.bashrc && \
     echo 'export ZEPPELIN_HOME=/usr/local/zeppelin' >> ~/.bashrc && \
-    echo 'export ZEPPELIN_CONF_DIR=$ZEPPELIN_HOME/conf' >> ~/.bashrc
+    echo 'export ZEPPELIN_CONF_DIR=$ZEPPELIN_HOME/conf' >> ~/.bashrc \
+    echo 'export HBASE_HOME=/usr/local/hbase' >> ~/.bashrc && \
+    echo 'export HBASE_CONF_DIR=$HBASE_HOME/conf' >> ~/.bashrc
 
 # 설정파일 복사(hdfs,sqoop,hive)
 COPY config/hdfs/*.xml ${HADOOP_CONF_DIR}/
@@ -124,6 +136,10 @@ RUN mkdir -p /usr/loca/spark/logs && chown -R $USER:$USER /usr/local/spark/ && \
 # 설정파일 복사(zeppelin)
 COPY config/zeppelin/* ${ZEPPELIN_CONF_DIR}/
 
+
+# 설정파일 복사(hbase)
+COPY config/hbase/* ${HBASE_CONF_DIR}/
+RUN  echo "${HDFS_DN1_NAME}\n${HDFS_DN2_NAME}\n${HDFS_DN3_NAME}" > /${HBASE_CONF_DIR}/regionservers
 
 # 초기 실행파일 복사
 COPY start.sh /usr/local/hadoop/start.sh
@@ -154,6 +170,9 @@ RUN wget https://fruitdev.tistory.com/attachment/cfile29.uf@2163EB425418EB0E12A9
 WORKDIR $HADOOP_HOME/etc/hadoop
 RUN echo "${HDFS_DN1_NAME}\n${HDFS_DN2_NAME}\n${HDFS_DN3_NAME}" > workers && \
     echo "${HDFS_NN1_NAME}\n${HDFS_NN2_NAME}" > masters
+
+
+
 
 RUN mkdir /var/run/sshd
 
